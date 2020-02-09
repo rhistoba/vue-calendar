@@ -52,7 +52,11 @@ export default class Calendar extends Vue {
   month: number = this.moment.month()
 
   get monthDates(): Array<Date> {
-    const startOfWeek = this.startOfMonth.startOf('week')
+    const startOfWeek = this.moment.clone()
+      .year(this.year)
+      .month(this.month)
+      .startOf('month')
+      .startOf('week')
     const year = startOfWeek.year()
     const month = startOfWeek.month()
     const startDay = startOfWeek.date()
@@ -64,11 +68,8 @@ export default class Calendar extends Vue {
     return moment().utc()
   }
 
-  get startOfMonth() {
-    return this.moment.year(this.year).month(this.month).startOf('month')
-  }
-
   get dayBgAndTextColor() {
+    const today = this.moment.clone().toDate()
     return (date: Date, index: number) => {
       let color = 'bg-white'
       if (date.getMonth() !== this.month) {
@@ -81,7 +82,9 @@ export default class Calendar extends Vue {
         }
         color += ' text-gray-500'
       } else {
-        if (index % 7 === 0) {
+        if (today.toLocaleDateString() === date.toLocaleDateString()) {
+          color = 'bg-yellow-200'
+        } else if (index % 7 === 0) {
           color = 'bg-red-200'
         } else if (index % 7 === 6) {
           color = 'bg-blue-200'
