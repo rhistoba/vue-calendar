@@ -31,11 +31,21 @@
 
       <div
         v-for="(date, index) in monthDates"
-        :key="`day-${date.toLocaleString()}`"
-        class="w-1/7 h-32 px-2"
+        :key="`day-${date.toUTCString()}`"
+        class="w-1/7 min-h-32 px-2"
         :class="dayBgAndTextColor(date, index)">
-        <div class="h-6 flex items-center border-b border-gray-600">
+        <div class="h-6 mb-1 flex items-center border-b border-gray-600">
           <p>{{ date.getDate() }}</p>
+        </div>
+        <div v-for="event in eventsByDate(date)"
+             :key="`event-${event.id}`"
+             class="mb-1 text-sm">
+          <div class="bg-blue-500 text-white h-5 px-1 truncate">
+            <span class="mr-1 hidden lg:inline">
+              {{ `${('0' + event.date.getUTCHours()).slice(-2)}:${('0' + event.date.getUTCMinutes()).slice(-2)}` }}
+            </span>
+            <span>{{ event.title }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -50,6 +60,36 @@ import moment from 'moment'
 export default class Calendar extends Vue {
   year: number = this.moment.year()
   month: number = this.moment.month()
+  events = [
+    { id: 1, title: 'AAA', date: new Date(Date.UTC(2020,1,1, 14)) },
+    { id: 2, title: 'BBB', date: new Date(Date.UTC(2020,1,2, 18)) },
+    { id: 3, title: 'CCC', date: new Date(Date.UTC(2020,1,3, 12)) },
+    { id: 4, title: 'DDD', date: new Date(Date.UTC(2020,1,1, 10, 30)) },
+    { id: 5, title: 'EEE', date: new Date(Date.UTC(2020,1,5, 13)) },
+    { id: 6, title: 'FFF', date: new Date(Date.UTC(2020,1,1, 19)) },
+    { id: 7, title: 'GGG', date: new Date(Date.UTC(2020,1,1, 16)) },
+    { id: 8, title: 'HHH', date: new Date(Date.UTC(2020,1,1, 17)) },
+  ]
+
+  get eventsByDate() {
+    return (date: Date) => {
+      return this.events
+        .filter(event => event.date.toUTCString().slice(0,16) === date.toUTCString().slice(0,16))
+        .sort((a, b): 0 | 1 | -1 => {
+          const aHours = a.date.getUTCHours()
+          const bHours = b.date.getUTCHours()
+          if (aHours > bHours) {
+            return 1
+          } else if (aHours < bHours) {
+            return -1
+          } else {
+            const aMinutes = a.date.getUTCMinutes()
+            const bMinutes = b.date.getUTCMinutes()
+            return aMinutes >= bMinutes ? 1 : -1
+          }
+        })
+    }
+  }
 
   get monthDates(): Array<Date> {
     const startOfWeek = this.moment.clone()
@@ -131,5 +171,8 @@ export default class Calendar extends Vue {
 <style lang="scss">
 .w-1\/7 {
   width: 14.285%;
+}
+.min-h-32 {
+  min-height: 8rem;
 }
 </style>
