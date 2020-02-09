@@ -1,6 +1,25 @@
 <template>
   <div class="w-full">
-    <p class="text-xl font-bold">{{ `${year}/${month + 1}` }}</p>
+    <div class="my-4">
+      <div class="inline-block text-lg mr-8">
+        <span class="mr-2">Year</span>
+        <span class="border rounded-l p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
+              @click="decrementYear">&lt;</span>
+        <span class="border-t border-b p-2">{{ year }}</span>
+        <span class="border rounded-r p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
+              @click="incrementYear">&gt;</span>
+      </div>
+
+      <div class="inline-block text-lg">
+        <span class="mr-2">Month</span>
+        <span class="border rounded-l p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
+              @click="decrementMonth">&lt;</span>
+        <span class="border-t border-b p-2">{{ month + 1 }}</span>
+        <span class="border rounded-r p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
+              @click="incrementMonth">&gt;</span>
+      </div>
+    </div>
+
     <div class="flex flex-wrap">
       <div class="w-1/7 px-2 pb-2 text-gray-600">Sun</div>
       <div class="w-1/7 px-2 pb-2 text-gray-600">Mon</div>
@@ -47,6 +66,38 @@ export default class Calendar extends Vue {
 
   get startOfMonth() {
     return this.moment.year(this.year).month(this.month).startOf('month')
+  }
+
+  incrementYear(): void {
+    const result = this.year + 1
+    if (1900 <= result && result < 2200) {
+      this.year = result
+    }
+  }
+
+  decrementYear(): void {
+    const result = this.year - 1
+    if (1900 <= result && result < 2200) {
+      this.year = result
+    }
+  }
+
+  incrementMonth(): void {
+    if (this.month === 11)  {
+      this.incrementYear()
+      this.month = 0
+    } else {
+      this.month++
+    }
+  }
+
+  decrementMonth(): void {
+    if (this.month === 0) {
+      this.decrementYear()
+      this.month = 11
+    } else {
+      this.month--
+    }
   }
 }
 </script>
