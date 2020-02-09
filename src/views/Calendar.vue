@@ -2,7 +2,7 @@
   <div class="w-full">
     <div class="my-4">
       <div class="inline-block text-lg mr-8">
-        <span class="mr-2">Year</span>
+        <span class="mr-2 text-gray-700">Year</span>
         <span class="border rounded-l p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
               @click="decrementYear">&lt;</span>
         <span class="border-t border-b p-2">{{ year }}</span>
@@ -11,7 +11,7 @@
       </div>
 
       <div class="inline-block text-lg">
-        <span class="mr-2">Month</span>
+        <span class="mr-2 text-gray-700">Month</span>
         <span class="border rounded-l p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
               @click="decrementMonth">&lt;</span>
         <span class="border-t border-b p-2">{{ month + 1 }}</span>
@@ -21,21 +21,21 @@
     </div>
 
     <div class="flex flex-wrap">
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Sun</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Mon</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Tue</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Wed</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Thu</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Fri</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-600">Sat</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Sun</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Mon</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Tue</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Wed</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Thu</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Fri</div>
+      <div class="w-1/7 px-2 pb-2 text-gray-700">Sat</div>
 
       <div
-        v-for="(day, index) in monthDays"
-        :key="`day-${day.toLocaleString()}`"
+        v-for="(date, index) in monthDates"
+        :key="`day-${date.toLocaleString()}`"
         class="w-1/7 h-32 px-2"
-        :class="{ 'bg-red-100': index % 7 === 0, 'bg-blue-100': index % 7 === 6 }">
-        <div class="h-6 flex items-center border-b border-gray-400">
-          <p>{{ day.getDate() }}</p>
+        :class="dayBgAndTextColor(date, index)">
+        <div class="h-6 flex items-center border-b border-gray-600">
+          <p>{{ date.getDate() }}</p>
         </div>
       </div>
     </div>
@@ -51,12 +51,12 @@ export default class Calendar extends Vue {
   year: number = this.moment.year()
   month: number = this.moment.month()
 
-  get monthDays(): Array<Date> {
+  get monthDates(): Array<Date> {
     const startOfWeek = this.startOfMonth.startOf('week')
     const year = startOfWeek.year()
     const month = startOfWeek.month()
     const startDay = startOfWeek.date()
-    return Array.from({ length: 35 }, (v, i) => i)
+    return Array.from({ length: 42 }, (v, i) => i)
       .map(i => new Date(Date.UTC(year, month, startDay + i)))
   }
 
@@ -66,6 +66,29 @@ export default class Calendar extends Vue {
 
   get startOfMonth() {
     return this.moment.year(this.year).month(this.month).startOf('month')
+  }
+
+  get dayBgAndTextColor() {
+    return (date: Date, index: number) => {
+      let color = 'bg-white'
+      if (date.getMonth() !== this.month) {
+        if (index % 7 === 0) {
+          color = 'bg-red-100'
+        } else if (index % 7 === 6) {
+          color = 'bg-blue-100'
+        } else {
+          color = 'bg-gray-200'
+        }
+        color += ' text-gray-500'
+      } else {
+        if (index % 7 === 0) {
+          color = 'bg-red-200'
+        } else if (index % 7 === 6) {
+          color = 'bg-blue-200'
+        }
+      }
+      return color
+    }
   }
 
   incrementYear(): void {
