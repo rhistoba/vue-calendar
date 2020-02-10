@@ -127,11 +127,18 @@ import { Component, Vue } from 'vue-property-decorator'
 import moment from 'moment'
 import { v4 as uuid } from 'uuid'
 
+interface Event {
+  id: string;
+  title: string;
+  date: Date;
+  content?: string;
+}
+
 @Component
 export default class Calendar extends Vue {
   year: number = this._moment.year()
   month: number = this._moment.month()
-  events = [
+  events: Array<Event> = [
     { id: uuid(), title: 'AAA', date: new Date(Date.UTC(2020,1,1, 14)), content: "AAA\nBBB" },
     { id: uuid(), title: 'BBB', date: new Date(Date.UTC(2020,1,2, 18)) },
     { id: uuid(), title: 'CCC', date: new Date(Date.UTC(2020,1,3, 12)) },
@@ -141,7 +148,7 @@ export default class Calendar extends Vue {
     { id: uuid(), title: 'GGG', date: new Date(Date.UTC(2020,1,1, 16)) },
     { id: uuid(), title: 'HHH', date: new Date(Date.UTC(2020,1,1, 17)) },
   ]
-  eventInfoDisplayingId = null
+  eventInfoDisplayingId: string | null = null
   eventFormDisplayingDate: Date | null = null
   form: { date: Date; hour: number; minute: number; title: string; content: string } = {
     date: new Date,
@@ -151,11 +158,11 @@ export default class Calendar extends Vue {
     content: ''
   }
 
-  get eventsByDate() {
-    return (date: Date) => {
+  get eventsByDate(): Function {
+    return (date: Date): Array<Event> => {
       return this.events
         .filter(event => event.date.toUTCString().slice(0,16) === date.toUTCString().slice(0,16))
-        .sort((a, b): 0 | 1 | -1 => {
+        .sort((a: Event, b: Event): 0 | 1 | -1 => {
           const aHours = a.date.getUTCHours()
           const bHours = b.date.getUTCHours()
           if (aHours > bHours) {
@@ -172,7 +179,7 @@ export default class Calendar extends Vue {
   }
 
   get isEventInfoDisplaying(): Function {
-    return (event: any): boolean => event.id === this.eventInfoDisplayingId
+    return (event: Event): boolean => event.id === this.eventInfoDisplayingId
   }
 
   get isEventFormDisplaying(): Function {
@@ -204,9 +211,9 @@ export default class Calendar extends Vue {
     return moment().utc()
   }
 
-  get dayBgAndTextColor() {
+  get dayBgAndTextColor(): Function {
     const today = this._moment.clone().toDate()
-    return (date: Date, index: number) => {
+    return (date: Date, index: number): string => {
       let color = 'bg-white'
       if (date.getMonth() !== this.month) {
         if (index % 7 === 0) {
@@ -262,7 +269,7 @@ export default class Calendar extends Vue {
     }
   }
 
-  openEventInfo(event: any): void {
+  openEventInfo(event: Event): void {
     this.eventInfoDisplayingId = event.id
   }
 
