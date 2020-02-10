@@ -110,9 +110,9 @@
                  :class="{ 'right-0': index % 7 > 4, 'left-0': index % 7 <= 4 }"
                  v-if="isEventInfoDisplaying(event)">
               <div class="w-64 min-h-32 px-2 py-1 rounded bg-white text-black border border-gray-400">
-                <p class="text-sm font-thin mb-1">{{ event.date.toUTCString() }}</p>
-                <p class="text-xl font-bold break-all mb-2">{{ event.title }}</p>
-                <p class="w-full break-all">{{ event.content }}</p>
+                <p class="text-xs font-thin">{{ event.date.toUTCString() }}</p>
+                <p class="text-xl font-bold break-all mb-1 border-b border-black">{{ event.title }}</p>
+                <p class="w-full break-all whitespace-pre-wrap">{{ event.content }}</p>
               </div>
             </div>
           </div>
