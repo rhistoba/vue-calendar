@@ -21,21 +21,21 @@
     </div>
 
     <div class="flex flex-wrap">
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Sun</div>
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Mon</div>
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Tue</div>
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Wed</div>
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Thu</div>
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Fri</div>
-      <div class="w-1/7 px-1 pb-2 text-gray-700">Sat</div>
+      <div class="w-1/7 pb-2 text-gray-700">Sun</div>
+      <div class="w-1/7 pb-2 text-gray-700">Mon</div>
+      <div class="w-1/7 pb-2 text-gray-700">Tue</div>
+      <div class="w-1/7 pb-2 text-gray-700">Wed</div>
+      <div class="w-1/7 pb-2 text-gray-700">Thu</div>
+      <div class="w-1/7 pb-2 text-gray-700">Fri</div>
+      <div class="w-1/7 pb-2 text-gray-700">Sat</div>
 
       <div
         v-for="(date, index) in monthDates"
         :key="`day-${date.toUTCString()}`"
-        class="w-1/7 min-h-32 px-1 pb-4"
+        class="w-1/7 min-h-32 pb-4"
         :class="dayBgAndTextColor(date, index)"
         @dblclick="openEventForm(date)">
-        <div class="h-6 mb-1 flex items-center border-b border-gray-600">
+        <div class="h-6 mb-1 pl-1 mr-2 flex items-center border-b border-gray-600">
           <p>{{ date.getDate() }}</p>
         </div>
 
@@ -95,14 +95,14 @@
 
         <div v-for="event in eventsByDate(date)"
              :key="`event-${event.id}`"
-             class="mb-1 text-sm"
+             class="mb-1 mr-2 text-sm"
              @mouseenter="openEventInfo(event)"
              @mouseleave="closeEventInfo">
           <div class="bg-blue-500 text-white h-5 px-1 truncate cursor-default">
-            <span class="mr-1 hidden lg:inline">
+            <span>
               {{ `${('0' + event.date.getUTCHours()).slice(-2)}:${('0' + event.date.getUTCMinutes()).slice(-2)}` }}
             </span>
-            <span>{{ event.title }}</span>
+            <span class="ml-1 hidden sm:inline">{{ event.title }}</span>
           </div>
 
           <div class="relative">
