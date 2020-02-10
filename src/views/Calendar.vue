@@ -39,12 +39,26 @@
         </div>
         <div v-for="event in eventsByDate(date)"
              :key="`event-${event.id}`"
-             class="mb-1 text-sm">
+             class="mb-1 text-sm cursor-default"
+             @mouseover="openEventInfo(event)"
+             @mouseleave="closeEventInfo(event)">
           <div class="bg-blue-500 text-white h-5 px-1 truncate">
             <span class="mr-1 hidden lg:inline">
               {{ `${('0' + event.date.getUTCHours()).slice(-2)}:${('0' + event.date.getUTCMinutes()).slice(-2)}` }}
             </span>
             <span>{{ event.title }}</span>
+          </div>
+
+          <div class="relative">
+            <div class="absolute top-0 cursor-auto"
+                 :class="{ 'right-0': index % 7 > 4, 'left-0': index % 7 <= 4 }"
+                 v-if="isEventInfoDisplaying(event)">
+              <div class="w-64 min-h-32 px-2 py-1 rounded bg-white border border-gray-400">
+                <p class="text-sm font-thin mb-1">{{ event.date.toUTCString() }}</p>
+                <p class="text-xl font-bold break-all mb-2">{{ event.title }}</p>
+                <p class="w-full break-all">{{ event.content }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +75,7 @@ export default class Calendar extends Vue {
   year: number = this.moment.year()
   month: number = this.moment.month()
   events = [
-    { id: 1, title: 'AAA', date: new Date(Date.UTC(2020,1,1, 14)) },
+    { id: 1, title: 'AAA', date: new Date(Date.UTC(2020,1,1, 14)), content: "AAA\nBBB" },
     { id: 2, title: 'BBB', date: new Date(Date.UTC(2020,1,2, 18)) },
     { id: 3, title: 'CCC', date: new Date(Date.UTC(2020,1,3, 12)) },
     { id: 4, title: 'DDD', date: new Date(Date.UTC(2020,1,1, 10, 30)) },
@@ -70,6 +84,7 @@ export default class Calendar extends Vue {
     { id: 7, title: 'GGG', date: new Date(Date.UTC(2020,1,1, 16)) },
     { id: 8, title: 'HHH', date: new Date(Date.UTC(2020,1,1, 17)) },
   ]
+  eventInfoDisplayingId = null
 
   get eventsByDate() {
     return (date: Date) => {
@@ -89,6 +104,10 @@ export default class Calendar extends Vue {
           }
         })
     }
+  }
+
+  get isEventInfoDisplaying(): Function {
+    return (event: any) => event.id === this.eventInfoDisplayingId
   }
 
   get monthDates(): Array<Date> {
@@ -164,6 +183,14 @@ export default class Calendar extends Vue {
     } else {
       this.month--
     }
+  }
+
+  openEventInfo(event: any): void {
+    this.eventInfoDisplayingId = event.id
+  }
+
+  closeEventInfo(): void {
+    this.eventInfoDisplayingId = null
   }
 }
 </script>
