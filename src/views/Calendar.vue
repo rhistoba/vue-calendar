@@ -96,7 +96,7 @@
         <div v-for="event in eventsByDate(date)"
              :key="`event-${event.id}`"
              class="mb-1 text-sm"
-             @mouseover="openEventInfo(event)"
+             @mouseenter="openEventInfo(event)"
              @mouseleave="closeEventInfo">
           <div class="bg-blue-500 text-white h-5 px-1 truncate cursor-default">
             <span class="mr-1 hidden lg:inline">
@@ -123,8 +123,15 @@
                   </button>
                   <button type="button"
                           class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-400 text-white cursor-pointer select-none"
-                          @click="removeEvent(event)">
+                          v-show="!isDisplayReallyRemove"
+                          @click="confirmRemoveEvent">
                     remove
+                  </button>
+                  <button type="button"
+                          class="px-2 py-1 text-sm rounded bg-white text-red-500 cursor-pointer select-none"
+                          v-show="isDisplayReallyRemove"
+                          @click="removeEvent(event)">
+                    really?
                   </button>
                 </div>
               </div>
@@ -172,6 +179,7 @@ export default class Calendar extends Vue {
     title: '',
     content: ''
   }
+  isDisplayReallyRemove = false
 
   get eventsByDate(): Function {
     return (date: Date): Array<Event> => {
@@ -285,6 +293,7 @@ export default class Calendar extends Vue {
   }
 
   openEventInfo(event: Event): void {
+    this.isDisplayReallyRemove = false
     this.eventInfoDisplayingId = event.id
   }
 
@@ -350,6 +359,11 @@ export default class Calendar extends Vue {
 
   removeEvent(targetEvent: Event): void {
     this.events = this.events.filter(event => targetEvent.id !== event.id)
+    this.isDisplayReallyRemove = false
+  }
+
+  confirmRemoveEvent(): void {
+    this.isDisplayReallyRemove = true
   }
 
   editEvent(targetEvent: Event): void {
