@@ -80,8 +80,8 @@
                 <button type="button"
                         class="px-2 py-1 text-sm rounded bg-blue-500 hover:bg-blue-400 text-white cursor-pointer select-none mr-2 disabled:bg-blue-300 disabled:cursor-not-allowed"
                         :disabled="!isValidParams"
-                        @click="addEvent">
-                  add
+                        @click="submitEvent">
+                  {{ form.targetEventId ? 'update' : 'create' }}
                 </button>
                 <button type="button"
                         class="px-2 py-1 text-sm rounded bg-gray-700 hover:bg-gray-600 text-white cursor-pointer select-none"
@@ -116,6 +116,11 @@
                   <p class="w-full break-all whitespace-pre-wrap">{{ event.content }}</p>
                 </div>
                 <div class="mt-2">
+                  <button type="button"
+                          class="px-2 py-1 mr-2 text-sm rounded bg-teal-500 hover:bg-teal-400 text-white cursor-pointer select-none"
+                          @click="editEvent(event)">
+                    edit
+                  </button>
                   <button type="button"
                           class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-400 text-white cursor-pointer select-none"
                           @click="removeEvent(event)">
@@ -159,7 +164,8 @@ export default class Calendar extends Vue {
   ]
   eventInfoDisplayingId: string | null = null
   eventFormDisplayingDate: Date | null = null
-  form: { date: Date; hour: number; minute: number; title: string; content: string } = {
+  form: { targetEventId: null | string; date: Date; hour: number; minute: number; title: string; content: string } = {
+    targetEventId: null,
     date: new Date,
     hour: 0,
     minute: 0,
@@ -293,7 +299,14 @@ export default class Calendar extends Vue {
 
   closeEventForm(): void {
     this.eventFormDisplayingDate = null
-    this.form.date = new Date
+    this.form = {
+      targetEventId: null,
+      date: new Date,
+      hour: 0,
+      minute: 0,
+      title: '',
+      content: ''
+    }
   }
 
   setFormDateHour(): void {
@@ -308,27 +321,49 @@ export default class Calendar extends Vue {
     }
   }
 
-  addEvent(): void {
-    if (this.isValidParams) {
-      this.events.push({
-        id: uuid(),
-        date: this.form.date,
-        title: this.form.title,
-        content: this.form.content,
-      })
-      this.closeEventForm()
-      this.form = {
-        date: new Date,
-        hour: 0,
-        minute: 0,
-        title: '',
-        content: ''
-      }
+  submitEvent(): void {
+    if (!this.isValidParams) return
+    if (!this.form.targetEventId) {
+      this._createEvent()
+    } else {
+      this._updateEvent()
     }
+    this.closeEventForm()
+  }
+
+  _createEvent(): void {
+    this.events.push({
+      id: uuid(),
+      date: this.form.date,
+      title: this.form.title,
+      content: this.form.content,
+    })
+  }
+
+  _updateEvent(): void {
+    const targetEvent = this.events.find(event => event.id === this.form.targetEventId)
+    if (!targetEvent) return
+    targetEvent.date = this.form.date
+    targetEvent.title = this.form.title
+    targetEvent.content = this.form.content
   }
 
   removeEvent(targetEvent: Event): void {
     this.events = this.events.filter(event => targetEvent.id !== event.id)
+  }
+
+  editEvent(targetEvent: Event): void {
+    if (this.events.find(event => event.id === targetEvent.id)) {
+      this.form = {
+        targetEventId: targetEvent.id,
+        date: new Date(targetEvent.date),
+        hour: targetEvent.date.getUTCHours(),
+        minute: targetEvent.date.getUTCMinutes(),
+        title: targetEvent.title,
+        content: targetEvent.content ? targetEvent.content : '',
+      }
+      this.openEventForm(targetEvent.date)
+    }
   }
 
   get isValidParams(): boolean {
