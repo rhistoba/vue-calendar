@@ -21,13 +21,13 @@
     </div>
 
     <div class="flex flex-wrap">
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Sun</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Mon</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Tue</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Wed</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Thu</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Fri</div>
-      <div class="w-1/7 px-2 pb-2 text-gray-700">Sat</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Sun</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Mon</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Tue</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Wed</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Thu</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Fri</div>
+      <div class="w-1/7 px-1 pb-2 text-gray-700">Sat</div>
 
       <div
         v-for="(date, index) in monthDates"
@@ -109,10 +109,19 @@
             <div class="absolute top-0"
                  :class="{ 'right-0': index % 7 > 4, 'left-0': index % 7 <= 4 }"
                  v-if="isEventInfoDisplaying(event)">
-              <div class="w-64 min-h-32 px-2 py-1 rounded bg-white text-black border border-gray-400">
-                <p class="text-xs font-thin">{{ event.date.toUTCString() }}</p>
-                <p class="text-xl font-bold break-all mb-1 border-b border-black">{{ event.title }}</p>
-                <p class="w-full break-all whitespace-pre-wrap">{{ event.content }}</p>
+              <div class="flex flex-col justify-between w-64 min-h-32 p-2 rounded bg-white text-black border border-gray-400">
+                <div>
+                  <p class="text-xs font-thin">{{ event.date.toUTCString() }}</p>
+                  <p class="text-xl font-bold break-all mb-1 border-b border-black">{{ event.title }}</p>
+                  <p class="w-full break-all whitespace-pre-wrap">{{ event.content }}</p>
+                </div>
+                <div class="mt-2">
+                  <button type="button"
+                          class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-400 text-white cursor-pointer select-none"
+                          @click="removeEvent(event)">
+                    remove
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -316,6 +325,10 @@ export default class Calendar extends Vue {
         content: ''
       }
     }
+  }
+
+  removeEvent(targetEvent: Event): void {
+    this.events = this.events.filter(event => targetEvent.id !== event.id)
   }
 
   get isValidParams(): boolean {
