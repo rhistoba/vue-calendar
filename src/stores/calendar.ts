@@ -23,6 +23,23 @@ class CalendarStore extends VuexModule {
     return this._month
   }
 
+  get today(): Date {
+    return CalendarStore.moment.toDate()
+  }
+
+  get monthDates(): Array<Date> {
+    const startOfWeek = CalendarStore.moment.clone()
+      .year(this.year)
+      .month(this.month)
+      .startOf('month')
+      .startOf('week')
+    const year = startOfWeek.year()
+    const month = startOfWeek.month()
+    const startDay = startOfWeek.date()
+    return Array.from({ length: 42 }, (v, i) => i)
+      .map(i => new Date(Date.UTC(year, month, startDay + i)))
+  }
+
   @action async incrementYear(): Promise<void> {
     this.updateYear(this.year + 1)
   }

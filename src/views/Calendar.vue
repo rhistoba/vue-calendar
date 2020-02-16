@@ -1,6 +1,7 @@
 <template>
   <div class="w-full mt-4">
     <CalendarYearMonth class="mb-4"/>
+    <CalendarDates class="mb-4"/>
 
     <div class="flex flex-wrap">
       <div class="w-1/7 pb-2 text-gray-700">Sun</div>
@@ -130,6 +131,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import moment from 'moment'
 import { v4 as uuid } from 'uuid'
 import CalendarYearMonth from '@/components/CalendarYearMonth.vue'
+import CalendarDates from '@/components/CalendarDates.vue'
 
 interface Event {
   id: string;
@@ -140,7 +142,8 @@ interface Event {
 
 @Component({
   components: {
-    CalendarYearMonth
+    CalendarYearMonth,
+    CalendarDates
   }
 })
 export default class Calendar extends Vue {
