@@ -32,7 +32,7 @@
         <div v-for="event in calendar.eventsByDate(date)"
              :key="`event-${event.id}`"
              class="mb-1 mr-2 text-sm">
-          <CalendarEvent :event="event"/>
+          <CalendarEvent :event="event" :index="index" />
         </div>
       </div>
     </div>

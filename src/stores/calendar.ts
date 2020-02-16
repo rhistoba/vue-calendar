@@ -73,10 +73,6 @@ class CalendarStore extends VuexModule {
     }
   }
 
-  get eventFormDisplayingDate(): Date | null {
-    return this._eventFormDisplayingDate
-  }
-
   get isEventFormDisplaying(): Function {
     return (date: Date): boolean => {
       if (this._eventFormDisplayingDate) {
@@ -133,6 +129,10 @@ class CalendarStore extends VuexModule {
     this.closeEventForm()
   }
 
+  @action async removeEvent(targetEvent: Event): Promise<void> {
+    this.destroyEvent(targetEvent)
+  }
+
   @mutation updateYear(value: number): void {
     if (1900 <= value && value < 2200) {
       this._year = value
@@ -164,6 +164,10 @@ class CalendarStore extends VuexModule {
     targetEvent.date = params.date
     targetEvent.title = params.title
     targetEvent.content = params.content
+  }
+
+  @mutation destroyEvent(targetEvent: Event): void {
+    this._events = this._events.filter(event => targetEvent.id !== event.id)
   }
 }
 
