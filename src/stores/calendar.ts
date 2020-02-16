@@ -157,16 +157,6 @@ class CalendarStore extends VuexModule {
     }
   }
 
-  @action async openEventForm(date: Date): Promise<void> {
-    this.updateEventFormDisplayingDate(date)
-    this.updateForm({
-      targetEventId: null,
-      date: new Date(date),
-      title: '',
-      content: '',
-    })
-  }
-
   @action async closeEventForm(): Promise<void> {
     this.updateEventFormDisplayingDate(null)
   }
@@ -184,6 +174,28 @@ class CalendarStore extends VuexModule {
 
   @action async removeEvent(targetEvent: Event): Promise<void> {
     this.destroyEvent(targetEvent)
+  }
+
+  @action async editEvent(targetEvent: Event): Promise<void> {
+    const form = {
+      targetEventId: targetEvent.id,
+      date: new Date(targetEvent.date),
+      title: targetEvent.title,
+      content: targetEvent.content ? targetEvent.content : '',
+    }
+    this.updateForm(form)
+    this.updateEventFormDisplayingDate(form.date)
+  }
+
+  @action async newEvent(date: Date): Promise<void> {
+    const form = {
+      targetEventId: null,
+      date: new Date(date),
+      title: '',
+      content: '',
+    }
+    this.updateForm(form)
+    this.updateEventFormDisplayingDate(date)
   }
 
   @mutation updateYear(value: number): void {

@@ -8,7 +8,8 @@
       </div>
       <div class="mt-2">
         <button type="button"
-                class="px-2 py-1 mr-2 text-sm rounded bg-teal-500 hover:bg-teal-400 text-white cursor-pointer select-none">
+                class="px-2 py-1 mr-2 text-sm rounded bg-teal-500 hover:bg-teal-400 text-white cursor-pointer select-none"
+                @click="calendar.editEvent(event)">
           edit
         </button>
         <button type="button"
