@@ -1,24 +1,6 @@
 <template>
-  <div class="w-full">
-    <div class="my-4">
-      <div class="inline-block text-lg mr-8">
-        <span class="mr-2 text-gray-700">Year</span>
-        <span class="border rounded-l p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
-              @click="decrementYear">&lt;</span>
-        <span class="border-t border-b p-2">{{ year }}</span>
-        <span class="border rounded-r p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
-              @click="incrementYear">&gt;</span>
-      </div>
-
-      <div class="inline-block text-lg">
-        <span class="mr-2 text-gray-700">Month</span>
-        <span class="border rounded-l p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
-              @click="decrementMonth">&lt;</span>
-        <span class="border-t border-b p-2">{{ month + 1 }}</span>
-        <span class="border rounded-r p-2 cursor-pointer select-none text-gray-500 hover:text-gray-400"
-              @click="incrementMonth">&gt;</span>
-      </div>
-    </div>
+  <div class="w-full mt-4">
+    <CalendarYearMonth class="mb-4"/>
 
     <div class="flex flex-wrap">
       <div class="w-1/7 pb-2 text-gray-700">Sun</div>
@@ -147,6 +129,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import moment from 'moment'
 import { v4 as uuid } from 'uuid'
+import CalendarYearMonth from '@/components/CalendarYearMonth.vue'
 
 interface Event {
   id: string;
@@ -155,7 +138,11 @@ interface Event {
   content?: string;
 }
 
-@Component
+@Component({
+  components: {
+    CalendarYearMonth
+  }
+})
 export default class Calendar extends Vue {
   year: number = this._moment.year()
   month: number = this._moment.month()
@@ -257,38 +244,6 @@ export default class Calendar extends Vue {
         }
       }
       return color
-    }
-  }
-
-  incrementYear(): void {
-    const result = this.year + 1
-    if (1900 <= result && result < 2200) {
-      this.year = result
-    }
-  }
-
-  decrementYear(): void {
-    const result = this.year - 1
-    if (1900 <= result && result < 2200) {
-      this.year = result
-    }
-  }
-
-  incrementMonth(): void {
-    if (this.month === 11)  {
-      this.incrementYear()
-      this.month = 0
-    } else {
-      this.month++
-    }
-  }
-
-  decrementMonth(): void {
-    if (this.month === 0) {
-      this.decrementYear()
-      this.month = 11
-    } else {
-      this.month--
     }
   }
 
