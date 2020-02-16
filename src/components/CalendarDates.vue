@@ -9,32 +9,14 @@
       <div class="w-1/7 pb-2 text-gray-700">Fri</div>
       <div class="w-1/7 pb-2 text-gray-700">Sat</div>
 
-      <div
+      <CalendarDate
+        :date="date"
+        :index="index"
         v-for="(date, index) in calendar.monthDates"
         :key="`day-${date.toUTCString()}`"
         class="w-1/7 min-h-32 pb-4"
         :class="dayBgAndTextColor(date, index)"
-        @dblclick="calendar.newEvent(date)">
-        <div class="h-6 mb-1 pl-1 mr-2 flex items-center border-b border-gray-600">
-          <p>{{ date.getDate() }}</p>
-        </div>
-
-        <div class="relative">
-          <CalendarEventForm
-            v-if="calendar.isEventFormDisplaying(date)"
-            class="absolute top-0 z-20"
-            :class="{ 'right-0': index % 7 > 4, 'left-0': index % 7 <= 4 }"
-            :index="index"
-            :date="date"
-          />
-        </div>
-
-        <div v-for="event in calendar.eventsByDate(date)"
-             :key="`event-${event.id}`"
-             class="mb-1 mr-2 text-sm">
-          <CalendarEvent :event="event" :index="index" />
-        </div>
-      </div>
+      />
     </div>
   </div>
 </template>
@@ -42,13 +24,11 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import store from '@/stores'
-import CalendarEvent from '@/components/CalendarEvent.vue'
-import CalendarEventForm from '@/components/CalendarEventForm.vue'
+import CalendarDate from '@/components/CalendarDate.vue'
 
 @Component({
   components: {
-    CalendarEvent,
-    CalendarEventForm
+    CalendarDate
   }
 })
 export default class CalendarDates extends Vue {

@@ -51,19 +51,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue'
 import { Component, Vue } from 'vue-property-decorator'
 import store from '@/stores'
 
-const Props = Vue.extend({
-  props: {
-    index: Number as PropType<number>,
-    date: Date as PropType<Date>
-  }
-})
-
 @Component
-export default class CalendarEventForm extends Props {
+export default class CalendarEventForm extends Vue {
   calendar = store.calendar
 }
 </script>

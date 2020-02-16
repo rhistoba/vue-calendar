@@ -120,7 +120,9 @@ class CalendarStore extends VuexModule {
   }
 
   set formDateHour(value: number) {
-    this._form.date.setUTCHours(value)
+    const newDate = new Date(this._form.date)
+    newDate.setUTCHours(value)
+    this._form.date = newDate
   }
 
   get formDateMinute(): number {
@@ -128,7 +130,9 @@ class CalendarStore extends VuexModule {
   }
 
   set formDateMinute(value: number) {
-    this._form.date.setUTCMinutes(value)
+    const newDate = new Date(this._form.date)
+    newDate.setUTCMinutes(value)
+    this._form.date = newDate
   }
 
   @action async incrementYear(): Promise<void> {
