@@ -23,6 +23,12 @@ class CalendarStore extends VuexModule {
     { id: uuid(), title: 'HHH', date: new Date(Date.UTC(2020,1,1, 17)) },
   ]
   private _eventFormDisplayingDate: Date | null = null
+  private _form: EventParams = {
+    targetEventId: null,
+    date: new Date(this.today),
+    title: '',
+    content: '',
+  }
 
   static get moment() {
     return moment().utc()
@@ -85,6 +91,46 @@ class CalendarStore extends VuexModule {
     }
   }
 
+  get form() {
+    return this._form
+  }
+
+  get isValidParams(): boolean {
+    return !!this.form.date && this.form.title.length > 0
+  }
+
+  get formTitle(): string {
+    return this.form.title
+  }
+
+  set formTitle(value: string) {
+    this._form.title = value
+  }
+
+  get formContent(): string {
+    return this.form.content
+  }
+
+  set formContent(value: string) {
+    this._form.content = value
+  }
+
+  get formDateHour(): number {
+    return this.form.date.getUTCHours()
+  }
+
+  set formDateHour(value: number) {
+    this._form.date.setUTCHours(value)
+  }
+
+  get formDateMinute(): number {
+    return this.form.date.getUTCMinutes()
+  }
+
+  set formDateMinute(value: number) {
+    this._form.date.setUTCMinutes(value)
+  }
+
   @action async incrementYear(): Promise<void> {
     this.updateYear(this.year + 1)
   }
@@ -113,18 +159,25 @@ class CalendarStore extends VuexModule {
 
   @action async openEventForm(date: Date): Promise<void> {
     this.updateEventFormDisplayingDate(date)
+    this.updateForm({
+      targetEventId: null,
+      date: new Date(date),
+      title: '',
+      content: '',
+    })
   }
 
   @action async closeEventForm(): Promise<void> {
     this.updateEventFormDisplayingDate(null)
   }
 
-  @action async submitEvent(params: EventParams): Promise<void> {
-    if (!params.date || params.title.length === 0) return
-    if (!params.targetEventId) {
-      this.createEvent(params)
+  @action async submitEvent(): Promise<void> {
+    if (!this.isValidParams) return
+
+    if (!this.form.targetEventId) {
+      this.createEvent(this.form)
     } else {
-      this.updateEvent(params)
+      this.updateEvent(this.form)
     }
     this.closeEventForm()
   }
@@ -146,7 +199,7 @@ class CalendarStore extends VuexModule {
   }
 
   @mutation updateEventFormDisplayingDate(value: Date | null): void {
-    this._eventFormDisplayingDate = value
+    this._eventFormDisplayingDate = value ? new Date(value) : null
   }
 
   @mutation createEvent(params: EventParams): void {
@@ -168,6 +221,10 @@ class CalendarStore extends VuexModule {
 
   @mutation destroyEvent(targetEvent: Event): void {
     this._events = this._events.filter(event => targetEvent.id !== event.id)
+  }
+
+  @mutation updateForm(form: EventParams): void {
+    this._form = Object.assign({}, form)
   }
 }
 
