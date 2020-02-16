@@ -4,3 +4,10 @@ export interface Event {
   date: Date;
   content?: string;
 }
+
+export interface EventParams {
+  targetEventId: string | null;
+  date: Date;
+  title: string;
+  content: string;
+}
