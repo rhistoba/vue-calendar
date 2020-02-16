@@ -17,6 +17,12 @@
         <div class="h-6 mb-1 pl-1 mr-2 flex items-center border-b border-gray-600">
           <p>{{ date.getDate() }}</p>
         </div>
+
+        <div v-for="event in calendar.eventsByDate(date)"
+             :key="`event-${event.id}`"
+             class="mb-1 mr-2 text-sm">
+          <CalendarEvent :event="event"/>
+        </div>
       </div>
     </div>
   </div>
@@ -25,8 +31,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import store from '@/stores'
+import CalendarEvent from '@/components/CalendarEvent.vue'
 
-@Component
+@Component({
+  components: {
+    CalendarEvent
+  }
+})
 export default class CalendarDates extends Vue {
   calendar = store.calendar
 

@@ -1,6 +1,8 @@
 import Vuex from 'vuex'
 import { createModule, mutation, action, extractVuexModule, createProxy } from "vuex-class-component";
 import moment from 'moment'
+import { Event } from '@/types'
+import { v4 as uuid } from "uuid"
 
 const VuexModule = createModule({
   namespaced: "calendar",
@@ -10,6 +12,16 @@ const VuexModule = createModule({
 class CalendarStore extends VuexModule {
   private _year: number = CalendarStore.moment.year()
   private _month: number = CalendarStore.moment.month()
+  private _events: Array<Event> = [
+    { id: uuid(), title: 'AAA', date: new Date(Date.UTC(2020,1,1, 14)), content: "AAA\nBBB" },
+    { id: uuid(), title: 'BBB', date: new Date(Date.UTC(2020,1,2, 18)) },
+    { id: uuid(), title: 'CCC', date: new Date(Date.UTC(2020,1,3, 12)) },
+    { id: uuid(), title: 'DDD', date: new Date(Date.UTC(2020,1,1, 10, 30)) },
+    { id: uuid(), title: 'EEE', date: new Date(Date.UTC(2020,1,5, 13)) },
+    { id: uuid(), title: 'FFF', date: new Date(Date.UTC(2020,1,1, 19)) },
+    { id: uuid(), title: 'GGG', date: new Date(Date.UTC(2020,1,1, 16)) },
+    { id: uuid(), title: 'HHH', date: new Date(Date.UTC(2020,1,1, 17)) },
+  ]
 
   static get moment() {
     return moment().utc()
@@ -38,6 +50,26 @@ class CalendarStore extends VuexModule {
     const startDay = startOfWeek.date()
     return Array.from({ length: 42 }, (v, i) => i)
       .map(i => new Date(Date.UTC(year, month, startDay + i)))
+  }
+
+  get eventsByDate(): Function {
+    return (date: Date): Array<Event> => {
+      return this._events
+        .filter(event => event.date.toUTCString().slice(0,16) === date.toUTCString().slice(0,16))
+        .sort((a: Event, b: Event): 0 | 1 | -1 => {
+          const aHours = a.date.getUTCHours()
+          const bHours = b.date.getUTCHours()
+          if (aHours > bHours) {
+            return 1
+          } else if (aHours < bHours) {
+            return -1
+          } else {
+            const aMinutes = a.date.getUTCMinutes()
+            const bMinutes = b.date.getUTCMinutes()
+            return aMinutes >= bMinutes ? 1 : -1
+          }
+        })
+    }
   }
 
   @action async incrementYear(): Promise<void> {
