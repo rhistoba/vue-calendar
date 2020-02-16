@@ -13,14 +13,14 @@ class CalendarStore extends VuexModule {
   private _year: number = CalendarStore.moment.year()
   private _month: number = CalendarStore.moment.month()
   private _events: Array<Event> = [
-    { id: uuid(), title: 'AAA', date: new Date(Date.UTC(2020,1,1, 14)), content: "AAA\nBBB" },
-    { id: uuid(), title: 'BBB', date: new Date(Date.UTC(2020,1,2, 18)) },
-    { id: uuid(), title: 'CCC', date: new Date(Date.UTC(2020,1,3, 12)) },
-    { id: uuid(), title: 'DDD', date: new Date(Date.UTC(2020,1,1, 10, 30)) },
-    { id: uuid(), title: 'EEE', date: new Date(Date.UTC(2020,1,5, 13)) },
-    { id: uuid(), title: 'FFF', date: new Date(Date.UTC(2020,1,1, 19)) },
-    { id: uuid(), title: 'GGG', date: new Date(Date.UTC(2020,1,1, 16)) },
-    { id: uuid(), title: 'HHH', date: new Date(Date.UTC(2020,1,1, 17)) },
+    { id: uuid(), title: 'AAA', date: new Date(Date.UTC(this._year, this._month,1, 14)), content: "AAA\nBBB" },
+    { id: uuid(), title: 'BBB', date: new Date(Date.UTC(this._year, this._month,2, 18)) },
+    { id: uuid(), title: 'CCC', date: new Date(Date.UTC(this._year, this._month,3, 12)) },
+    { id: uuid(), title: 'DDD', date: new Date(Date.UTC(this._year, this._month,1, 10, 30)) },
+    { id: uuid(), title: 'EEE', date: new Date(Date.UTC(this._year, this._month,5, 13)) },
+    { id: uuid(), title: 'FFF', date: new Date(Date.UTC(this._year, this._month,1, 19)) },
+    { id: uuid(), title: 'GGG', date: new Date(Date.UTC(this._year, this._month,1, 16)) },
+    { id: uuid(), title: 'HHH', date: new Date(Date.UTC(this._year, this._month,1, 17)) },
   ]
   private _eventFormDisplayingDate: Date | null = null
   private _form: EventParams = {

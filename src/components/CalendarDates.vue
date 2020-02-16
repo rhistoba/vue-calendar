@@ -14,7 +14,7 @@
         :index="index"
         v-for="(date, index) in calendar.monthDates"
         :key="`day-${date.toUTCString()}`"
-        class="w-1/7 min-h-32 pb-4"
+        class="w-1/7 min-h-32"
         :class="dayBgAndTextColor(date, index)"
       />
     </div>
